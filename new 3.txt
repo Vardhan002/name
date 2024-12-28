@@ -1,0 +1,99 @@
+<template>
+  <div>
+    <label for="receiptType">Select Receipt Type:</label>
+    <select id="receiptType" @change="updateReceiptType" v-model="moduleData.receipt_type">
+      <option value="AP">Application</option>
+      <option value="ADF">Advance Fee</option>
+      <option value="PM">Pocket Money</option>
+      <option value="CD">Deposit</option>
+      <option value="TBL">Tablet Fee</option>
+    </select>
+
+    <label for="admissionType">Select Admission Type:</label>
+    <select id="admissionType" @change="updateAdmissionType" v-model="moduleData.admission_type">
+      <option value="PRO">Professional</option>
+      <option value="REG">Regular</option>
+      <!-- Add more options as needed -->
+    </select>
+
+    <label for="paymentMode">Select Payment Mode:</label>
+    <select id="paymentMode" @change="updatePaymentMode" v-model="moduleData.payment_mode">
+      <option value="CQ">Cheque</option>
+      <option value="DD">Demand Draft</option>
+      <option value="CASH">Cash</option>
+      <!-- Add more options as needed -->
+    </select>
+
+    <div v-if="visibility.ShowStudentDetails">Student Details Section</div>
+    <div v-if="visibility.ShowClass">Class Section</div>
+    <div v-if="visibility.ShowPaymentMode">Payment Mode Section</div>
+    <!-- Other sections based on visibility flags -->
+  </div>
+</template>
+
+<script>
+
+    const moduleData = ref({
+      receipt_type: 'AP', // Default value
+      admission_type: 'PRO', // Default value
+      payment_mode: 'CQ' // Default value
+    });
+
+    const visibility = computed(() => {
+      const isApplication = moduleData.value.receipt_type === "AP";
+      const isAdvanceFee = moduleData.value.receipt_type === "ADF";
+      const isPocketMoney = moduleData.value.receipt_type === "PM";
+      const isDeposite = moduleData.value.receipt_type === "CD";
+      const isTabletFee = moduleData.value.receipt_type === "TBL";
+      const isPro = moduleData.value.admission_type === "PRO";
+      const isChequeOrDD =
+        moduleData.value.payment_mode === "CQ" ||
+        moduleData.value.payment_mode === "DD";
+
+      return {
+        isApplication,
+        isAdvanceFee,
+        isPocketMoney,
+        isDeposite,
+        ShowStudentDetails:
+          isPocketMoney || isDeposite || isAdvanceFee || isTabletFee,
+        ShowClass: isApplication || isPocketMoney || isDeposite || isTabletFee,
+        ShowPersonalDetails:
+          isPocketMoney || isDeposite || isAdvanceFee || isTabletFee,
+        ShowPaymentMode:
+          isApplication || isPocketMoney || isDeposite || isTabletFee,
+        ShowReceiptDetails:
+          isApplication || isPocketMoney || isDeposite || isTabletFee,
+        ShowGuardianDetails:
+          isApplication || isPocketMoney || isDeposite || isTabletFee,
+        ShowDescription:
+          isPocketMoney || isDeposite || isAdvanceFee || isTabletFee,
+        ShowReceiptStatus:
+          isApplication || isPocketMoney || isDeposite || isAdvanceFee || isTabletFee,
+        isPro,
+        isChequeOrDD,
+      };
+    });
+
+    // Methods to update moduleData
+    const updateReceiptType = (event) => {
+      moduleData.value.receipt_type = event.target.value;
+    };
+
+    const updateAdmissionType = (event) => {
+      moduleData.value.admission_type = event.target.value;
+    };
+
+    const updatePaymentMode = (event) => {
+      moduleData.value.payment_mode = event.target.value;
+    };
+
+    return {
+      moduleData,
+      visibility,
+      updateReceiptType,
+      updateAdmissionType,
+      updatePaymentMode,
+    };
+
+</script>
